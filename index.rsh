@@ -16,16 +16,26 @@ const buyerInteract = {
 	reportWisdom: Fun([Bytes(128)], Null),
 };
 export const main = Reach.App(() => {
+	// when ctc.p.Seller {index.mjs line 72}
 	const S = Participant('Seller', sellerInteract);
+	// when ctc.p.Buyer {index.mjs line 92}
 	const B = Participant('Buyer', buyerInteract);
+
 	init();
+	// enter step
 	S.only(() => {
+		// seller decides the price they would like to sell their wisdom at
 		const price = declassify(interact.price);
 	});
+	// publish to consensus step
 	S.publish(price);
+	// consensus step is used for actions that do not require a user
+	// { index.mjs line 71}
 	S.interact.reportReady(price);
+	// once action is completed commit is used to exit the consensus step
 	commit();
 	B.only(() => {
+		// {index.mjs line 92 returns Bool}
 		const willBuy = declassify(interact.confirmPurchase(price));
 	});
 	B.publish(willBuy);
